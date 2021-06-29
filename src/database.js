@@ -4,7 +4,7 @@ const { Pool } = pg;
 
 const databaseConfig = {
     user:'postgres',
-    password:'1234567',
+    password:'123456',
     host:'localhost',
     port:5432,
     database:'sneakers_camp_database'

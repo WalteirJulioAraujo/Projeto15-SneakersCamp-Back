@@ -7,7 +7,7 @@ const databaseConfig = {
     password:'1234567',
     host:'localhost',
     port:5432,
-    database:'sneakerscamp'
+    database:'sneakers_camp_database'
 }
 
 const connection = new Pool(databaseConfig);

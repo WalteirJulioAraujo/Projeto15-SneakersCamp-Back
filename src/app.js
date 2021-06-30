@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import connection from './database.js';
+import bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
 import { LogInSchema } from './schemas/AllSchemas.js';
 
@@ -26,12 +27,12 @@ app.post('/login', async (req,res)=>{
         const searchIfAlreadyExistsSession = await connection.query(`
         SELECT * FROM sessions
         WHERE "userId" = $1
-        `,[user.id]);
+        `,[user?.id]);
         if(searchIfAlreadyExistsSession.rows[0]){
             await connection.query(`
             DELETE FROM sessions
             WHERE "userId" = $1
-            `,[user.id]);
+            `,[user?.id]);
         }
     
         if(user && bcrypt.compareSync(password, user.password)){

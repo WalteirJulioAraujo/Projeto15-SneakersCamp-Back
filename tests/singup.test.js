@@ -3,16 +3,15 @@ import supertest from 'supertest';
 import connection from '../src/database';
 
 
-
-beforeEach( async ()=>{
-    await connection.query(`DELETE FROM users`);
-});
-
-afterAll(()=>{
-    connection.end();
-})
-
 describe('POST /signup', ()=>{
+
+    beforeEach( async ()=>{
+        await connection.query(`DELETE FROM users`);
+    });
+    
+    afterAll(()=>{
+        connection.end();
+    })
    
     it('returns 201 for valid params', async ()=>{
 

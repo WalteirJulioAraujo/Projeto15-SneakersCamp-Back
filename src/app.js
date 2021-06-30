@@ -9,7 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get('/signup', async (req,res)=>{
+app.post('/signup', async (req,res)=>{
     const { name, email, password, cep } = req.body;
 
     const validate = SignUpSchema.validate(req.body);
@@ -20,6 +20,12 @@ app.get('/signup', async (req,res)=>{
 
     const hash = bcrypt.hashSync(password,10);
     try{
+        const thisEmailalreadyExists = await connection.query(`
+        SELECT * FROM users
+        WHERE email = $1
+        `,[email]);
+
+        if(thisEmailalreadyExists.rows.length) return res.sendStatus(409);
 
         await connection.query(`
         INSERT INTO users

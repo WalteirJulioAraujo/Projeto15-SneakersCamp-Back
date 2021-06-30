@@ -47,7 +47,7 @@ describe('POST /login', ()=>{
         expect(result.status).toEqual(401);
     });
 
-    it('check if there is a session and if it is unique', async ()=>{
+    it('check if there is a session, if it is unique and if is the same', async ()=>{
         const body = { email, password };
         const resultLogin = await supertest(app).post('/login').send(body);
         expect(resultLogin.status).toEqual(200);
@@ -57,5 +57,17 @@ describe('POST /login', ()=>{
         WHERE users.email = $1
         `,[email]);
         expect(searchSession.rows.length).toEqual(1);
+    });
+
+    it('check if the token sent by the api is the same one registered in the database', async ()=>{
+        const body = { email, password };
+        const resultLogin = await supertest(app).post('/login').send(body);
+        expect(resultLogin.status).toEqual(200);
+        const searchSession = await connection.query(`
+        SELECT * FROM sessions
+        JOIN users ON users.id = sessions."userId"
+        WHERE users.email = $1
+        `,[email]);
+        expect(resultLogin.body.token).toEqual(searchSession.rows[0].token);
     });
 });

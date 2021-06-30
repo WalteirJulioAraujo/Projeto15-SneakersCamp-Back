@@ -11,12 +11,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/plugin-transform-runtime": "^7.14.5",
+    "@babel/preset-env": "^7.14.7",
+    "babel-jest": "^27.0.6",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "joi": "^17.4.0",
     "pg": "^8.6.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.8"
+    "jest": "^27.0.6",
+    "nodemon": "^2.0.8",
+    "supertest": "^6.1.3"
   }
 }

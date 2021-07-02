@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import connection from "./database.js";
 import bcrypt from "bcrypt";
+import dayjs from "dayjs";
 import { v4 as uuid } from "uuid";
 import { LogInSchema } from "./schemas/AllSchemas.js";
 import { SignUpSchema } from "./schemas/AllSchemas.js";
@@ -58,7 +59,6 @@ app.post("/signup", async (req, res) => {
     );
 
     if (thisEmailalreadyExists.rows.length) return res.sendStatus(409);
-
     await connection.query(
       `
         INSERT INTO users
@@ -120,7 +120,12 @@ app.post("/login", async (req, res) => {
             `,
         [user.id, token]
       );
-      res.send({ name: user.name, token }).status(200);
+      const response = await connection.query(
+        `SELECT cep FROM users WHERE id = $1`,
+        [user.id]
+      );
+      const cep = response.rows[0].cep.toString();
+      res.send({ name: user.name, token, cep, id: user.id }).status(200);
     } else {
       return res.sendStatus(401);
     }
@@ -130,14 +135,36 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get('/stock/:id', async (req,res)=>{
-  const availabeSizes = await connection.query(`
+app.get("/stock/:id", async (req, res) => {
+  const availabeSizes = await connection.query(
+    `
   SELECT * FROM stock
   WHERE "sneakersId"=$1
   AND quantity > 0
-  `,[req.params.id]);
-  res.send(availabeSizes.rows)
-})
+  `,
+    [req.params.id]
+  );
+  res.send(availabeSizes.rows);
+});
+
+app.post("/payment", async (req, res) => {
+  try {
+    const newBody = req.body;
+    newBody.date = dayjs().format();
+    await connection.query(
+      `INSERT INTO sales (sneakers,"userId","shippingAddress",value,date) VALUES ($1,$2,$3,$4,$5)`,
+      [
+        newBody.sneakers,
+        newBody.userId,
+        newBody.shippingAddress,
+        newBody.value,
+        newBody.date,
+      ]
+    );
+    res.send(201);
+  } catch {
+    res.sendStatus(500);
+  }
+});
 
 export default app;
-

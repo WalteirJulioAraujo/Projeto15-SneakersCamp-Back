@@ -2,7 +2,8 @@ import express from "express";
 import cors from "cors";
 import connection from "./database.js";
 import bcrypt from "bcrypt";
-import { stringify, v4 as uuid } from "uuid";
+import dayjs from "dayjs";
+import { v4 as uuid } from "uuid";
 import { LogInSchema } from "./schemas/AllSchemas.js";
 import { SignUpSchema } from "./schemas/AllSchemas.js";
 
@@ -144,6 +145,26 @@ app.get("/stock/:id", async (req, res) => {
     [req.params.id]
   );
   res.send(availabeSizes.rows);
+});
+
+app.post("/payment", async (req, res) => {
+  try {
+    const newBody = req.body;
+    newBody.date = dayjs().format();
+    await connection.query(
+      `INSERT INTO sales (sneakers,"userId","shippingAddress",value,date) VALUES ($1,$2,$3,$4,$5)`,
+      [
+        newBody.sneakers,
+        newBody.userId,
+        newBody.shippingAddress,
+        newBody.value,
+        newBody.date,
+      ]
+    );
+    res.send(201);
+  } catch {
+    res.sendStatus(500);
+  }
 });
 
 export default app;

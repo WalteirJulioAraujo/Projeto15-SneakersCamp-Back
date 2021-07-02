@@ -130,7 +130,6 @@ app.post("/login", async (req, res) => {
   }
 });
 
-
 app.get('/stock/:id', async (req,res)=>{
   const availabeSizes = await connection.query(`
   SELECT * FROM stock

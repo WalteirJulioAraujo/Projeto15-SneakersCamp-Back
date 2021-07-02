@@ -3,11 +3,10 @@ import pg from "pg";
 const { Pool } = pg;
 
 const databaseConfig = {
-  user: "postgres",
-  password: "123456",
-  host: "localhost",
-  port: 5432,
-  database: "sneakers_camp_database",
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+      rejectUnauthorized: false
+  }
 };
 
 const connection = new Pool(databaseConfig);

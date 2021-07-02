@@ -167,4 +167,12 @@ app.post("/payment", async (req, res) => {
   }
 });
 
+for (let i = 1; i < 13; i++) {
+  const unit = Math.floor(Math.random() * 5) + 1;
+  connection.query(`
+    INSERT INTO stock ("sneakersId",size,quantity) VALUES (${i},39,$1),(${i},40,$1),(${i},41,$1),(${i},42,$1),(${i},43,$1),(${i},44,$1)`,
+    [unit]
+  );
+}
+
 export default app;

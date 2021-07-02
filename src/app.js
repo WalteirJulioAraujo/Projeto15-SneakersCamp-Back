@@ -130,5 +130,15 @@ app.post("/login", async (req, res) => {
   }
 });
 
+
+app.get('/stock/:id', async (req,res)=>{
+  const availabeSizes = await connection.query(`
+  SELECT * FROM stock
+  WHERE "sneakersId"=$1
+  AND quantity > 0
+  `,[req.params.id]);
+  res.send(availabeSizes.rows)
+})
+
 export default app;
 

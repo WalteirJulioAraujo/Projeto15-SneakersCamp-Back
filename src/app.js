@@ -124,7 +124,7 @@ app.post("/login", async (req, res) => {
         [user.id]
       );
       const cep = response.rows[0].cep.toString();
-      res.send({ name: user.name, token, cep }).status(200);
+      res.send({ name: user.name, token, cep, id: user.id }).status(200);
     } else {
       return res.sendStatus(401);
     }
